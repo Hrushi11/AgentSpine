@@ -1,32 +1,50 @@
-version: 1.0
-
-organization:
-  id: "00000000-0000-0000-0000-000000000000"
-  name: "Local Dev"
-
 database:
-  url: ${DATABASE_URL:-"postgresql+asyncpg://postgres:postgres@localhost:5432/agentspine"}
+  url: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@localhost:5432/agentspine}
   pool_size: 10
   max_overflow: 20
 
 redis:
-  url: ${REDIS_URL:-"redis://localhost:6379/0"}
+  url: ${REDIS_URL:-redis://localhost:6379/0}
 
-features:
-  preset: "full"
-  knowledge_graph: true
-  semantic_dedupe: true
-  circuit_breaker: true
-  rate_limiter: true
-  distributed_locks: true
-  judiciary: true
-  rewards: true
-  notifications: true
-  credential_vault: true
+pipeline:
+  auto_execute_threshold: 0.3
+  approval_threshold: 0.7
+  timeout_per_step_ms: 5000
+  judiciary_timeout_ms: 30000
+
+dedupe:
+  semantic_enabled: true
+  similarity_threshold: 0.92
+  lookback_days: 7
+
+lock:
+  backend: redis
+  default_ttl_seconds: 300
+  watchdog_interval_ratio: 0.33
 
 graph:
-  backend: "postgres"
+  backend: postgres
   cache_ttl_seconds: 300
+  max_traversal_depth: 4
 
-auto_execute_threshold: 0.3
-approval_threshold: 0.7
+circuit_breaker:
+  failure_threshold: 5
+  window_seconds: 60
+  recovery_seconds: 30
+
+rate_limit:
+  window_seconds: 60
+  max_requests_per_agent: 200
+  max_requests_per_workflow: 1000
+
+notifications:
+  execution_webhook_url: ${AGENTSPINE_EXECUTION_WEBHOOK_URL:-}
+  approval_webhook_url: ${AGENTSPINE_APPROVAL_WEBHOOK_URL:-}
+  failure_webhook_url: ${AGENTSPINE_FAILURE_WEBHOOK_URL:-}
+
+security:
+  master_key: ${AGENTSPINE_MASTER_KEY:-dev-only-master-key}
+
+logging:
+  level: ${AGENTSPINE_LOG_LEVEL:-info}
+  format: ${AGENTSPINE_LOG_FORMAT:-json}

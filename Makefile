@@ -8,10 +8,10 @@ dev: docker-up migrate  ## Start infra + run migrations
 	@echo "Infrastructure ready. Install SDK: cd sdk && pip install -e '.[dev]'"
 
 docker-up:  ## Start Postgres + Redis
-	docker-compose up -d postgres redis
+	docker compose up -d postgres redis
 
 docker-down:  ## Stop all containers
-	docker-compose down
+	docker compose down
 
 # ============================================================
 # SDK
@@ -46,16 +46,16 @@ type-check:  ## Run type checker
 # ============================================================
 
 migrate:  ## Run database migrations
-	alembic upgrade head
+	alembic -c migrations/alembic.ini upgrade head
 
 migrate-new:  ## Create a new migration (usage: make migrate-new MSG="add foo table")
-	alembic revision --autogenerate -m "$(MSG)"
+	alembic -c migrations/alembic.ini revision --autogenerate -m "$(MSG)"
 
 migrate-rollback:  ## Rollback last migration
-	alembic downgrade -1
+	alembic -c migrations/alembic.ini downgrade -1
 
 migrate-status:  ## Show migration status
-	alembic current
+	alembic -c migrations/alembic.ini current
 
 # ============================================================
 # Server
@@ -69,13 +69,13 @@ server:  ## Start the FastAPI server
 # ============================================================
 
 stack-up:  ## Start full stack (Postgres + Redis + Server + Dashboard)
-	docker-compose up -d
+	docker compose up -d
 
 stack-down:  ## Stop full stack
-	docker-compose down -v
+	docker compose down -v
 
 stack-logs:  ## Tail logs for all services
-	docker-compose logs -f
+	docker compose logs -f
 
 # ============================================================
 # Clean

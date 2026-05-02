@@ -35,9 +35,14 @@ dependencies = [
 
 [project.optional-dependencies]
 redis = ["redis>=5.0,<6.0"]
-embeddings = ["sentence-transformers>=3.0,<4.0"]
+embeddings = ["sentence-transformers>=3.0,<4.0", "pgvector>=0.3,<0.4"]
 neo4j = ["neo4j>=5.0,<6.0"]
-all = ["agentspine[redis,embeddings]"]
+all = [
+    "redis>=5.0,<6.0",
+    "sentence-transformers>=3.0,<4.0",
+    "pgvector>=0.3,<0.4",
+    "neo4j>=5.0,<6.0",
+]
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.24",
@@ -45,6 +50,7 @@ dev = [
     "ruff>=0.8",
     "mypy>=1.13",
     "alembic>=1.14",
+    "httpx>=0.28",
 ]
 
 [project.urls]

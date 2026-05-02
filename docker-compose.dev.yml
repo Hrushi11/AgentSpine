@@ -1,18 +1,16 @@
-version: "3.8"
-
 services:
   server:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: server/Dockerfile
     command: ["uvicorn", "agentspine_server.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8080", "--reload"]
     volumes:
       - ./server/src:/app/src
-      - ./sdk/src:/app/sdk/src
+      - ./sdk/src:/sdk/src
       - ./configs:/app/configs
     environment:
-      - AGENTSPINE_CONFIG_PATH=/app/configs/agentspine.yaml
-      - AGENTSPINE_LOG_LEVEL=debug
+      AGENTSPINE_CONFIG_PATH: /app/configs/agentspine.yaml
+      AGENTSPINE_LOG_LEVEL: debug
 
   dashboard:
     build:
@@ -20,5 +18,8 @@ services:
       dockerfile: Dockerfile
     command: ["npm", "run", "dev"]
     volumes:
-      - ./dashboard/src:/app/src
-      - ./dashboard/public:/app/public
+      - ./dashboard:/app
+      - /app/node_modules
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+      AGENTSPINE_API_URL: http://server:8080

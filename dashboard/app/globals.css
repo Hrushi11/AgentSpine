@@ -1,0 +1,256 @@
+:root {
+  --bg: #f6f4ee;
+  --panel: #fffdf6;
+  --line: #d8d2c4;
+  --text: #1f1b16;
+  --muted: #6f6658;
+  --accent: #0f766e;
+  --accent-soft: #d7f1ee;
+  --danger: #b42318;
+  --shadow: 0 16px 40px rgba(40, 32, 22, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.08), transparent 28rem),
+    linear-gradient(180deg, #faf7f1 0%, var(--bg) 100%);
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  border-right: 1px solid var(--line);
+  padding: 2rem 1.25rem;
+  background: rgba(255, 253, 246, 0.88);
+  backdrop-filter: blur(12px);
+}
+
+.brand {
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.nav {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.nav a {
+  padding: 0.85rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid transparent;
+  color: var(--muted);
+  transition: 160ms ease;
+}
+
+.nav a:hover {
+  border-color: var(--line);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.content {
+  padding: 2rem;
+}
+
+.hero {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  font-size: clamp(2rem, 3vw, 3rem);
+  letter-spacing: -0.06em;
+}
+
+.hero p {
+  margin: 0;
+  max-width: 48rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid.two {
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.card h2,
+.card h3 {
+  margin-top: 0;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  letter-spacing: -0.04em;
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.table th {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", "Cascadia Code", monospace;
+  font-size: 0.9rem;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status.executed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.pending_approval {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.blocked,
+.status.denied,
+.status.failed {
+  background: #fee4e2;
+  color: var(--danger);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.stack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.stack input,
+.stack button,
+.policy-form input,
+.policy-form select,
+.policy-form textarea,
+.policy-form button {
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+}
+
+.stack button,
+.policy-form button {
+  cursor: pointer;
+  background: var(--text);
+  color: white;
+  font-weight: 700;
+}
+
+.stack button:hover,
+.policy-form button:hover {
+  opacity: 0.9;
+}
+
+.policy-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.policy-form-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.empty {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--muted);
+}
+
+@media (max-width: 840px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .content {
+    padding: 1.25rem;
+  }
+}

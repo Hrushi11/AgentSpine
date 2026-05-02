@@ -12,7 +12,7 @@ class AgentSpineTimeout(AgentSpineError):
 
 
 class AgentSpineUnavailable(AgentSpineError):
-    """Database or Redis connection failed."""
+    """Database, Redis, or the embedded pipeline is unavailable."""
 
 
 class ResourceLocked(AgentSpineError):
@@ -22,14 +22,19 @@ class ResourceLocked(AgentSpineError):
         self.lock_key = lock_key
         self.locked_by = locked_by
         self.retry_after_seconds = retry_after_seconds
-        super().__init__(
-            f"Resource '{lock_key}' is locked by '{locked_by}'. "
-            f"Retry after {retry_after_seconds}s."
-        )
+        super().__init__(f"Resource '{lock_key}' is locked by '{locked_by}'. Retry after {retry_after_seconds}s.")
+
+
+class RateLimitExceeded(AgentSpineError):
+    """The action exceeded a configured throughput limit."""
+
+
+class CircuitBreakerOpen(AgentSpineError):
+    """Execution is blocked because a tool is failing repeatedly."""
 
 
 class ToolNotFound(AgentSpineError):
-    """No connector registered for the action type."""
+    """No connector or tool was registered for an action type."""
 
 
 class ToolTimeout(AgentSpineError):
@@ -46,8 +51,16 @@ class ToolExecutionError(AgentSpineError):
 
 
 class CredentialNotFound(AgentSpineError):
-    """No credentials found for the tool."""
+    """No credentials found for the requested tool."""
 
 
 class PolicyViolation(AgentSpineError):
     """Action was denied by the policy engine."""
+
+
+class ApprovalNotFound(AgentSpineError):
+    """Approval record does not exist."""
+
+
+class ActionNotFound(AgentSpineError):
+    """Action record does not exist."""

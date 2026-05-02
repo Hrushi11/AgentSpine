@@ -1,21 +1,25 @@
-"""Configuration loading — env vars, YAML files, programmatic overrides."""
+"""Configuration loading for AgentSpine."""
 
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import yaml
 import structlog
+import yaml
 
 logger = structlog.get_logger()
+ENV_PATTERN = re.compile(r"^\$\{(?P<name>[A-Z0-9_]+)(:-\"?(?P<default>.*)\"?)?\}$")
+
+DEFAULT_DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/agentspine"
 
 
 @dataclass
 class DatabaseConfig:
-    url: str = ""
+    url: str = DEFAULT_DATABASE_URL
     pool_size: int = 10
     max_overflow: int = 20
 
@@ -67,6 +71,25 @@ class CircuitBreakerConfig:
 
 
 @dataclass
+class RateLimitConfig:
+    window_seconds: int = 60
+    max_requests_per_agent: int = 200
+    max_requests_per_workflow: int = 1000
+
+
+@dataclass
+class NotificationConfig:
+    execution_webhook_url: str = ""
+    approval_webhook_url: str = ""
+    failure_webhook_url: str = ""
+
+
+@dataclass
+class SecurityConfig:
+    master_key: str = ""
+
+
+@dataclass
 class LoggingConfig:
     level: str = "info"
     format: str = "json"
@@ -84,6 +107,9 @@ class Config:
     lock: LockConfig = field(default_factory=LockConfig)
     graph: GraphConfig = field(default_factory=GraphConfig)
     circuit_breaker: CircuitBreakerConfig = field(default_factory=CircuitBreakerConfig)
+    rate_limit: RateLimitConfig = field(default_factory=RateLimitConfig)
+    notifications: NotificationConfig = field(default_factory=NotificationConfig)
+    security: SecurityConfig = field(default_factory=SecurityConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
 
     @property
@@ -111,73 +137,64 @@ class ConfigLoader:
         config_path: str | None = None,
         database_url: str | None = None,
         redis_url: str | None = None,
+        secret: str | None = None,
     ) -> Config:
         config = Config()
 
-        # Layer 1: YAML file
         yaml_path = config_path or os.environ.get("AGENTSPINE_CONFIG_PATH")
         if yaml_path and Path(yaml_path).exists():
             ConfigLoader._apply_yaml(config, yaml_path)
 
-        # Layer 2: Environment variables
         ConfigLoader._apply_env(config)
 
-        # Layer 3: Programmatic overrides (highest priority)
         if database_url:
             config.database.url = database_url
         if redis_url:
             config.redis.url = redis_url
+        if secret:
+            config.security.master_key = secret
 
-        # Validate required config
         if not config.database.url:
-            raise ValueError(
-                "DATABASE_URL is required. Set it via env var, agentspine.yaml, "
-                "or the database_url constructor parameter."
-            )
+            config.database.url = DEFAULT_DATABASE_URL
 
         return config
 
     @staticmethod
     def _apply_yaml(config: Config, path: str) -> None:
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             data: dict[str, Any] = yaml.safe_load(f) or {}
 
-        if "database" in data:
-            for k, v in data["database"].items():
-                if hasattr(config.database, k):
-                    setattr(config.database, k, v)
-
-        if "redis" in data:
-            for k, v in data["redis"].items():
-                if hasattr(config.redis, k):
-                    setattr(config.redis, k, v)
-
-        if "pipeline" in data:
-            for k, v in data["pipeline"].items():
-                if hasattr(config.pipeline, k):
-                    setattr(config.pipeline, k, v)
-
-        if "dedupe" in data:
-            for k, v in data["dedupe"].items():
-                if hasattr(config.dedupe, k):
-                    setattr(config.dedupe, k, v)
-
-        if "embedding" in data:
-            for k, v in data["embedding"].items():
-                if hasattr(config.embedding, k):
-                    setattr(config.embedding, k, v)
-
-        if "lock" in data:
-            for k, v in data["lock"].items():
-                if hasattr(config.lock, k):
-                    setattr(config.lock, k, v)
-
-        if "graph" in data:
-            for k, v in data["graph"].items():
-                if hasattr(config.graph, k):
-                    setattr(config.graph, k, v)
-
+        ConfigLoader._apply_mapping(config, data)
         logger.info("config.loaded_yaml", path=path)
+
+    @staticmethod
+    def _apply_mapping(config: Config, data: dict[str, Any]) -> None:
+        normalized = ConfigLoader._resolve_placeholders(data)
+        mapping = {
+            "database": config.database,
+            "redis": config.redis,
+            "pipeline": config.pipeline,
+            "dedupe": config.dedupe,
+            "embedding": config.embedding,
+            "lock": config.lock,
+            "graph": config.graph,
+            "circuit_breaker": config.circuit_breaker,
+            "rate_limit": config.rate_limit,
+            "notifications": config.notifications,
+            "security": config.security,
+            "logging": config.logging,
+        }
+
+        for key, target in mapping.items():
+            if key in normalized and isinstance(normalized[key], dict):
+                for field_name, value in normalized[key].items():
+                    if hasattr(target, field_name):
+                        setattr(target, field_name, value)
+
+        if "auto_execute_threshold" in normalized:
+            config.pipeline.auto_execute_threshold = normalized["auto_execute_threshold"]
+        if "approval_threshold" in normalized:
+            config.pipeline.approval_threshold = normalized["approval_threshold"]
 
     @staticmethod
     def _apply_env(config: Config) -> None:
@@ -191,3 +208,28 @@ class ConfigLoader:
             config.logging.format = fmt
         if model := os.environ.get("AGENTSPINE_EMBEDDING_MODEL"):
             config.embedding.model = model
+        if secret := os.environ.get("AGENTSPINE_MASTER_KEY"):
+            config.security.master_key = secret
+        if webhook := os.environ.get("AGENTSPINE_EXECUTION_WEBHOOK_URL"):
+            config.notifications.execution_webhook_url = webhook
+        if webhook := os.environ.get("AGENTSPINE_APPROVAL_WEBHOOK_URL"):
+            config.notifications.approval_webhook_url = webhook
+        if webhook := os.environ.get("AGENTSPINE_FAILURE_WEBHOOK_URL"):
+            config.notifications.failure_webhook_url = webhook
+
+    @staticmethod
+    def _resolve_placeholders(value: Any) -> Any:
+        if isinstance(value, dict):
+            return {key: ConfigLoader._resolve_placeholders(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [ConfigLoader._resolve_placeholders(item) for item in value]
+        if not isinstance(value, str):
+            return value
+
+        match = ENV_PATTERN.match(value.strip())
+        if match is None:
+            return value
+
+        env_name = match.group("name")
+        default = match.group("default") or ""
+        return os.environ.get(env_name, default.strip('"'))

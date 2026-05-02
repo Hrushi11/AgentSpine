@@ -1,24 +1,14 @@
-"""FastAPI entry point for the AgentSpine standalone server."""
+"""Compatibility shim while the server package is normalized to src layout."""
 
-from fastapi import FastAPI
-from agentspine import AgentSpine, FeatureFlags
+from __future__ import annotations
 
-app = FastAPI(title="AgentSpine Server")
+import sys
+from pathlib import Path
 
-# Initialize spine instance
-spine = AgentSpine(
-    workflow="default_server",
-    features=FeatureFlags.full()
-)
+_SRC_PATH = Path(__file__).resolve().parent / "src"
+if str(_SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(_SRC_PATH))
 
-@app.on_event("startup")
-async def startup():
-    await spine._ensure_init()
+from agentspine_server.app import app, create_app  # noqa: E402
 
-@app.on_event("shutdown")
-async def shutdown():
-    await spine.close()
-
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+__all__ = ["app", "create_app"]

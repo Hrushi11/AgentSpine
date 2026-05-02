@@ -29,7 +29,7 @@ AgentSpine is an embedded Python SDK that sits between your AI agents and the to
 
 ```bash
 # Start infrastructure
-docker-compose up -d
+docker compose up -d
 
 # Install SDK
 pip install agentspine[all]
@@ -42,10 +42,15 @@ from agentspine import AgentSpine
 async def main():
     spine = AgentSpine(workflow="demo")
 
+    async def local_echo(payload, context):
+        return {"echo": payload}
+
+    spine.register_tool("demo.echo", local_echo)
+
     result = await spine.request_action(
         agent="demo_agent",
-        action_type="slack.send_message",
-        payload={"channel": "#general", "text": "Hello from AgentSpine!"},
+        action_type="demo.echo",
+        payload={"text": "Hello from AgentSpine!"},
         idempotency_key="demo_001",
     )
     print(f"Status: {result.status}")
@@ -53,6 +58,9 @@ async def main():
 
 asyncio.run(main())
 ```
+
+If no local tool is registered for an action type, AgentSpine emits a normalized execution signal so an external
+worker or service can perform the real side effect and report the result back later.
 
 ## Feature Flags
 

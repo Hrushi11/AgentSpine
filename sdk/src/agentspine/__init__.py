@@ -6,8 +6,11 @@ from agentspine.models import (
     ActionRequest,
     ActionResult,
     ActionStatus,
+    ApprovalResolutionInput,
+    PolicyDecision,
     Resource,
     RewardInput,
+    WorkflowConfigInput,
 )
 from agentspine.exceptions import (
     AgentSpineError,
@@ -27,8 +30,11 @@ __all__ = [
     "ActionRequest",
     "ActionResult",
     "ActionStatus",
+    "ApprovalResolutionInput",
+    "PolicyDecision",
     "Resource",
     "RewardInput",
+    "WorkflowConfigInput",
     "AgentSpineError",
     "AgentSpineTimeout",
     "AgentSpineUnavailable",

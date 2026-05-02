@@ -7,11 +7,11 @@
 ![Postgres](https://img.shields.io/badge/Postgres-16%2B-blue)
 ![Redis](https://img.shields.io/badge/Redis-7%2B-red)
 ![License](https://img.shields.io/badge/License-Apache%202.0-green)
+
+### Open-source adaptive control plane for production AI agents.
 </div>
 
-> Open-source adaptive control plane for production AI agents.
-
-AgentSpine is an embedded Python SDK that sits between your AI agents and the tools they use — enforcing policies, preventing duplicates, managing locks, scoring risk, and logging every action for full observability.
+**AgentSpine** is an embedded Python SDK that sits between your AI agents and the tools they use — enforcing policies, preventing duplicates, managing locks, scoring risk, and logging every action for full observability.
 
 > [!NOTE]
 > Think Kafka + policy engine + audit log + judge feedback loop for AI agents.

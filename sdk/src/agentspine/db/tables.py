@@ -8,7 +8,7 @@ from typing import Any
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Index, Integer, LargeBinary, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from uuid7 import uuid7
+from uuid_extensions import uuid7
 
 try:
     from pgvector.sqlalchemy import Vector as PGVector

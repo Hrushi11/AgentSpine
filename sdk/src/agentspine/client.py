@@ -408,7 +408,7 @@ class AgentSpine:
         return asyncio.run(self.request_action(**kwargs))
 
     async def _execute_fail_open(self, request: ActionRequest) -> ActionResult:
-        from uuid7 import uuid7
+        from uuid_extensions import uuid7
 
         action_id = str(uuid7())
         executor = ToolExecutor(self._registry, self._config)

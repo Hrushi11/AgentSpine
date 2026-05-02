@@ -7,7 +7,7 @@ from time import perf_counter
 from typing import Any
 
 import structlog
-from uuid7 import uuid7
+from uuid_extensions import uuid7
 
 from agentspine.config import Config
 from agentspine.db.repository import create_tool_call, update_action

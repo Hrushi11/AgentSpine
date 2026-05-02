@@ -13,6 +13,9 @@
 
 AgentSpine is an embedded Python SDK that sits between your AI agents and the tools they use — enforcing policies, preventing duplicates, managing locks, scoring risk, and logging every action for full observability.
 
+> [!NOTE]
+> Think Kafka + policy engine + audit log + judge feedback loop for AI agents.
+
 ## Features
 
 - **Policy Engine** — Declarative rules that deny, allow, or require approval for agent actions

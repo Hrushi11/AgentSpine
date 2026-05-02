@@ -1,8 +1,8 @@
 <div align="center">
-<img src="assets/AgentSpineHero.png" alt="AgentSpine Hero">
+<img src="https://raw.githubusercontent.com/Hrushi11/AgentSpine/master/assets/AgentSpineHero.png" alt="AgentSpine Hero">
 <br>
 
-![PyPI - Version](https://img.shields.io/pypi/v/agentspine)
+[![PyPI - Version](https://img.shields.io/pypi/v/agentspine)](https://pypi.org/project/agentspine/)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
 ![Postgres](https://img.shields.io/badge/Postgres-16%2B-blue)
 ![Redis](https://img.shields.io/badge/Redis-7%2B-red)

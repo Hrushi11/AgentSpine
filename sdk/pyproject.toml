@@ -54,9 +54,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/org/agentspine"
-Documentation = "https://agentspine.dev/docs"
-Repository = "https://github.com/org/agentspine"
+Homepage = "https://hrushi11.github.io/AgentSpine/"
+Documentation = "https://hrushi11.github.io/AgentSpine/getting-started/"
+Repository = "https://github.com/Hrushi11/AgentSpine"
 
 [tool.hatch.version]
 source = "vcs"

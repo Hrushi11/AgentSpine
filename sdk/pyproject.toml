@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentspine"
+dynamic = ["version"]
+description = "Open-source adaptive control plane for production AI agents"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+authors = [{ name = "AgentSpine Contributors" }]
+keywords = ["ai", "agents", "control-plane", "safety", "production"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "sqlalchemy[asyncio]>=2.0,<3.0",
+    "asyncpg>=0.29,<1.0",
+    "pydantic>=2.0,<3.0",
+    "pyyaml>=6.0",
+    "cryptography>=42.0",
+    "structlog>=24.0",
+    "uuid7>=0.1",
+]
+
+[project.optional-dependencies]
+redis = ["redis>=5.0,<6.0"]
+embeddings = ["sentence-transformers>=3.0,<4.0"]
+neo4j = ["neo4j>=5.0,<6.0"]
+all = ["agentspine[redis,embeddings]"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "testcontainers[postgres,redis]>=4.0",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "alembic>=1.14",
+]
+
+[project.urls]
+Homepage = "https://github.com/org/agentspine"
+Documentation = "https://agentspine.dev/docs"
+Repository = "https://github.com/org/agentspine"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.1.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentspine"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "ANN", "S", "B", "A", "COM", "C4", "PT", "RET", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

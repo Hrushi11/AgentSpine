@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Alembic
+migrations/versions/__pycache__/
+
+# Environment
+.env
+.env.local
+
+# Docker
+docker-compose.override.yml
+
+# Node (dashboard)
+node_modules/
+.next/
+dashboard/.next/
+dashboard/node_modules/
+
+# Dist
+sdk/dist/
+server/dist/

@@ -1,0 +1,32 @@
+version: 1.0
+
+organization:
+  id: "00000000-0000-0000-0000-000000000000"
+  name: "Local Dev"
+
+database:
+  url: ${DATABASE_URL:-"postgresql+asyncpg://postgres:postgres@localhost:5432/agentspine"}
+  pool_size: 10
+  max_overflow: 20
+
+redis:
+  url: ${REDIS_URL:-"redis://localhost:6379/0"}
+
+features:
+  preset: "full"
+  knowledge_graph: true
+  semantic_dedupe: true
+  circuit_breaker: true
+  rate_limiter: true
+  distributed_locks: true
+  judiciary: true
+  rewards: true
+  notifications: true
+  credential_vault: true
+
+graph:
+  backend: "postgres"
+  cache_ttl_seconds: 300
+
+auto_execute_threshold: 0.3
+approval_threshold: 0.7

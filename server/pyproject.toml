@@ -1,0 +1,14 @@
+[project]
+name = "agentspine-server"
+version = "0.1.0"
+description = "FastAPI server for AgentSpine"
+requires-python = ">=3.11"
+dependencies = [
+    "agentspine",
+    "fastapi>=0.100",
+    "uvicorn[standard]>=0.22.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

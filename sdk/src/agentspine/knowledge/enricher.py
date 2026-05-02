@@ -1,0 +1,1 @@
+"""Post-action KG enricher."""

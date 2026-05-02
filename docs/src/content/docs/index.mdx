@@ -1,0 +1,36 @@
+---
+title: AgentSpine
+description: The event backbone for safe, self-improving AI agents.
+template: splash
+hero:
+  tagline: An embedded Python SDK that sits between your AI agents and the tools they use — enforcing policies, preventing duplicates, managing locks, scoring risk, and logging every action for full observability.
+  image:
+    file: ../../assets/AgentSpineHeroSquare.png
+  actions:
+    - text: Start Here
+      link: /AgentSpine/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/Hrushi11/AgentSpine
+      icon: github
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why AgentSpine?
+
+<CardGrid stagger>
+	<Card title="Adaptive Control Plane" icon="setting">
+		Dynamically manage agent workflows and execution paths in real-time.
+	</Card>
+	<Card title="Self-Improving Loops" icon="refresh">
+		Integrated evaluation and feedback loops for continuous agent learning.
+	</Card>
+	<Card title="Safety & Guardrails" icon="shield">
+		Enforce strict policies and guardrails to ensure reliable agent behavior.
+	</Card>
+	<Card title="Production Ready" icon="rocket">
+		Built for high-scale, low-latency production environments with Redis and Postgres.
+	</Card>
+</CardGrid>

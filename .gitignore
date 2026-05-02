@@ -50,3 +50,6 @@ dashboard/node_modules/
 # Dist
 sdk/dist/
 server/dist/
+
+# Docs (Astro)
+.astro/
